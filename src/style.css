@@ -1,0 +1,788 @@
+/* == BODY Y HTML == */
+html,
+body {
+    height: 100%;
+    margin: 0;
+    font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial
+}
+
+body {
+    background: linear-gradient(180deg, #041025 0%, #0f1724 100%);
+    color: #e6eef6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px
+}
+
+button {
+    cursor: pointer;
+}
+
+/* == CARD == */
+.card {
+    position: relative;
+    width: 100%;
+    min-width: 300px;
+    height: 100%;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent);
+    border-radius: 14px;
+    padding: 28px;
+    box-shadow: 0 8px 30px rgba(2, 6, 23, 0.6);
+}
+
+
+/* == COLORES == */
+.blanco {
+    color: white;
+}
+
+/* == BIENVENIDO == */
+.bienvenido {
+    color: #9baec0;
+    font-size: 12px;
+    text-align: end;
+    position: relative;
+}
+
+/* == CONTADOR == */
+.count {
+    font-size: 72px;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+}
+
+/* == FECHAS == */
+.date-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.IZQ,
+.DER,
+.HOY {
+    color: white;
+    font-size: 18px;
+}
+
+.date-row button {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 10px;
+    padding: 10px 14px;
+    cursor: pointer;
+}
+
+input[type="date"] {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    padding: 10px;
+    border-radius: 10px;
+    color: inherit;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    border-radius: 50%;
+    padding: 4px;
+}
+
+/* == CONTROLES == */
+.controls {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 40px;
+}
+
+.btnMas,
+.btnMenos {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 35px;
+    margin-left: 50px;
+    color: white;
+}
+
+.btnTrash {
+    background: transparent;
+    border: none;
+    font-size: 15px;
+    color: white;
+    transition: all 0.3s ease;
+    position: relative;
+    left: 70px;
+}
+
+/* == BARRA DE PROGRESO == */
+.progress-wrapper {
+    margin: 10px 0 20px;
+    text-align: center;
+
+}
+
+.progress-bar {
+    width: 100%;
+    height: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+
+}
+
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    transition: width 0.4s ease;
+    border-radius: 8px;
+}
+
+.Faltan {
+    margin-top: 6px;
+    font-size: 14px;
+    color: #9baec0;
+    text-align: center;
+    position: relative;
+
+}
+
+/* == MENU LATERAL == */
+
+.topbar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.5rem 1rem;
+    color: var(--text);
+    position: sticky;
+    top: 0;
+    z-index: 1001;
+}
+
+/* Botón menú */
+.menu-btn {
+    background: transparent;
+    border: none;
+    color: var(--text);
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+/* Menú lateral */
+.menu-lateral {
+    position: fixed;
+    left: -500px;
+    width: var(--menu-width);
+    height: 100%;
+    background: var(--bg);
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    top: 0;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Mostrar menú */
+.menu-lateral.show {
+    left: 0;
+}
+
+/* Colapsar menú */
+.menu-lateral.collapsed {
+    width: var(--menu-collapsed);
+}
+
+.menu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid #333;
+}
+
+.menu-title {
+    margin: 0;
+    font-size: 1.2rem;
+    color: var(--text);
+}
+
+.menu-lateral ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex: 1;
+}
+
+.menu-lateral li {
+    margin: 0;
+}
+
+.menu-lateral button {
+    width: 100%;
+    background: none;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    color: var(--text);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    position: relative;
+}
+
+.menu-lateral.collapsed button span {
+    display: none;
+}
+
+.menu-lateral li[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--bg);
+    padding: 0.2rem 0.5rem;
+    white-space: nowrap;
+    border-radius: 4px;
+    margin-left: 5px;
+    font-size: 0.85rem;
+    color: var(--text);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+/* == SPINNER == */
+.spinner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.25);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    pointer-events: all;
+}
+
+.spin {
+    font-size: 3rem;
+    color: #9baec0;
+    animation: spin 1s linear infinite;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+/* == EFECTOS == */
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* == OTROS == */
+.width100 {
+    width: 100%;
+}
+
+.width88 {
+    width: 88%;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.outline {
+    outline: none;
+}
+
+/* == NAME-GROUP == */
+.C2 {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.C1 {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+.gp25 {
+    gap: 25px;
+}
+
+.gp50 {
+    gap: 50px;
+}
+
+.gp100 {
+    gap: 100px;
+}
+
+.FZTitle {
+    font-size: 30px;
+    font-weight: 620;
+}
+
+.mx-4 {
+    margin-left: 2rem;
+    margin-right: 2rem;
+}
+
+.my-4 {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+.my-2 {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.pt-4 {
+    padding-top: 2rem;
+}
+
+.py-4 {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+.py-2 {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.px-1 {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
+
+.fz-14 {
+    font-size: 14px;
+}
+
+.tpP {
+    top: 200px;
+}
+
+.L-23 {
+    left: 23.5rem;
+}
+
+.T-1 {
+ top: 1.8rem;
+}
+
+
+/* == POSICIONES == */
+.absolute {
+    position: absolute;
+}
+
+.relative {
+    position: relative;
+}
+
+/* == CENTRAR == */
+.text-center {
+    text-align: center;
+}
+
+.flex {
+    display: flex;
+}
+
+.SB {
+    justify-content: space-between;
+
+}
+
+/* == FONDO TRANSPARENTE == */
+.transparente {
+    background: transparent;
+}
+
+.bordeNo {
+    border: none;
+}
+
+/* == INPUT == */
+.fondoInput {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.bordeInput {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+}
+
+.MBInput {
+    margin-bottom: 14px;
+}
+
+.paddingInput {
+    padding: 12px 14px;
+}
+
+.colorInput {
+    color: #e6eef6;
+}
+
+.FSInput {
+    font-size: 15px;
+}
+
+/* == BTN OJO == */
+.paddingOjo {
+    padding: 6px 7px;
+}
+
+.topOjo {
+    top: 55.7%;
+}
+
+.MLOjo {
+    margin-left: 36%;
+}
+
+.topOjoL {
+    top: 44%;
+} 
+
+.MLOjoL {
+    margin-left: 78%;
+}
+
+/* == PAISES == */
+.dropdown {
+    width: 100%;
+    margin-bottom: 14px;
+}
+
+.dropdown-btn {
+    width: 88%;
+    padding: 12px 14px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    color: #e6eef6;
+    font-size: 15px;
+    cursor: pointer;
+
+}
+
+.dropdown-content {
+    position: absolute;
+    width: 100%;
+    overflow-y: auto;
+    background: rgba(15, 23, 36, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    z-index: 10;
+    margin-top: 4px;
+}
+
+.dropdown-item {
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.dropdown-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* == BTN ==*/
+.bordeBtn {
+    border: 1px solid #9baec0;
+    border-radius: 12px;
+}
+
+.colorBtn {
+    color: #9baec0;
+}
+
+.paddingBtn {
+    padding: 12px;
+}
+
+.transicionesBtn {
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.25s ease, color 0.25s ease;
+}
+
+.MPBtn {
+    margin-top: 8px;
+}
+
+.tranformBtnHover {
+    transform: translateY(-1px);
+}
+
+.btnHover:hover {
+    color: #0f1724;
+    background: #9baec0;
+}
+
+/* == MSJ LOGIN / REGISTRO == */
+.colorMsj {
+    color: #9baec0;
+}
+
+.FZMsj {
+    font-size: 14px;
+}
+
+.Text-decorationMsj {
+    text-decoration: none;
+}
+
+.ColorMsj:hover {
+    color: #e6eef6;
+}
+
+.MGTopMsj {
+    margin-top: 18px;
+}
+
+/* == GOOGLE == */
+.fondoGoogle {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.bordeGoogle {
+    border-radius: 12px;
+    border: none;
+}
+
+.MBGoogle {
+    margin-bottom: 20px;
+}
+
+.paddingGoogle {
+    padding: 10px 12px;
+}
+
+.colorGoogle {
+    color: white;
+}
+
+.FZGoogle {
+    font-size: 20px;
+}
+
+/* == o == */
+.separator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 16px 0;
+}
+
+.separator .line {
+    flex: 1;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.separator .or {
+    color: #9baec0;
+    font-weight: bold;
+}
+
+/* == BOTON GUARDAR CAMBIOS == */
+.btnGC {
+    width: 100%;
+    background: transparent;
+    border: 1px solid #9baec0;
+    border-radius: 12px;
+    color: #9baec0;
+    font-weight: 600;
+    padding: 12px;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.25s ease, color 0.25s ease;
+    margin-top: 8px;
+}
+
+.btnGC:hover {
+    transform: translateY(-1px);
+    background: #9baec0;
+    color: #0f1724;
+}
+
+/* == BOTON ELIMINAR CUENTA == */
+.btnEC {
+    width: 100%;
+    background: transparent;
+    border: 1px solid red;
+    border-radius: 12px;
+    color: red;
+    font-weight: 600;
+    padding: 12px;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.25s ease, color 0.25s ease;
+    margin-top: 8px;
+}
+
+.btnEC:hover {
+    transform: translateY(-1px);
+    background: red;
+    color: white;
+}
+
+/* == INPUTS DE CUENTA == */
+
+.form-group {
+    box-sizing: border-box;
+    position: relative;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    transition: border-color 0.3s ease;
+}
+
+.form-group:focus-within {
+    box-sizing: border-box;
+    border-color: white;
+}
+
+.form-group input,
+select {
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    margin: 8px;
+    background: transparent;
+}
+
+.form-group input[type="text"] {
+    width: 100%;
+}
+
+.form-group input[type="password"] {
+    width: 100%;
+}
+
+.form-group input[type="email"] {
+    width: 100%;
+}
+
+.form-group input[type="date"] {
+    width: 100%;
+}
+
+.form-group select {
+    width: 95%;
+}
+
+.form-group.posicion-ancho_completo {
+    right: 8px;
+}
+
+.form-group.floating-label {
+    position: relative;
+    margin-bottom: 5px;
+}
+
+.form-group.floating-label input[type="text"],
+.form-group.floating-label input[type="email"],
+.form-group.floating-label input[type="password"],
+.form-group.floating-label select {
+    font-family: "Roboto", Arial, sans-serif;
+    box-sizing: border-box;
+    background-color: transparent;
+    color: white;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-group.floating-label label {
+    position: absolute;
+    left: 10px;
+    top: 6px;
+    color: #ffffff;
+    font-size: 1rem;
+    pointer-events: none;
+    transition: all 0.2s ease-out;
+
+    padding: 0 4px;
+}
+
+.form-group.floating-label div {
+    right: 4px;
+    position: absolute;
+    top: 4px;
+    color: #777;
+    background-color: transparent;
+    width: 1.4rem;
+    border: none;
+    cursor: pointer;
+}
+
+#email {
+    color: white !important;
+}
+
+.form-group.floating-label input:focus+label,
+.form-group.floating-label select:focus+label {
+    top: -20px;
+    left: 8px;
+    font-size: 0.8rem;
+    color: white;
+    background-color: var(--color-cuadro-datos);
+}
+
+
+.form-group.floating-label input:not(:placeholder-shown):not(:focus)+label,
+.form-group.floating-label select:not(:placeholder-shown):not(:focus)+label {
+    top: -20px;
+    left: 8px;
+    font-size: 0.8rem;
+    color: #777;
+    /* negro */
+    background-color: var(--color-cuadro-datos);
+}
+
+.form-group.floating-label input:focus,
+.form-group.floating-label select:focus {
+    box-shadow: 0 0 0 0px transparent;
+    caret-color: var(--color-input-foco);
+    outline: none;
+}
+
+/* == RESET PASS == */
+.resetpass {
+    background: transparent;
+    color: #9baec0;
+    border: none;
+    outline: none;
+    text-decoration: none;
+}
