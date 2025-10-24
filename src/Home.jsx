@@ -13,13 +13,26 @@ import {
 
 export default function Home({ user }) {
   const [count, setCount] = useState(0);
-  const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
   const [goal, setGoal] = useState(8);
   const [loading, setLoading] = useState(false);
-  const [zonaHoraria, setZonaHoraria] = useState(
-    Intl.DateTimeFormat().resolvedOptions().timeZone
-  );
+  const [loadingReset, setLoadingReset] = useState(false);
+  const getTodayInZone = (zone) => {
+    const now = new Date();
+    const options = {
+      timeZone: zone,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    };
+    const formatter = new Intl.DateTimeFormat("en-CA", options);
+    return formatter.format(now);
+  };
+
+  const [date, setDate] = useState(getTodayInZone(Intl.DateTimeFormat().resolvedOptions().timeZone));
   const [nombre, setNombre] = useState("Usuario");
+  const [zonaHoraria, setZonaHoraria] = useState("");
+  const [resetPopup, setResetPopup] = useState(false);
+
 
   const currentKey = date;
 
@@ -46,7 +59,7 @@ export default function Home({ user }) {
     const fetchCount = async () => {
       setLoading(true);
       try {
-        const ref = doc(db, "vasos", user.uid, "dias", currentKey);
+        const ref = doc(db, "usuarios", user.uid, "dias", currentKey);
         const snap = await getDoc(ref);
         setCount(snap.exists() ? snap.data().count : 0);
       } finally {
@@ -54,7 +67,7 @@ export default function Home({ user }) {
       }
     };
     fetchCount();
-  }, [currentKey, user.uid]);
+  }, [currentKey]);
 
   const changeCount = async (delta) => {
     const newVal = Math.max(count + delta, 0);
@@ -62,7 +75,7 @@ export default function Home({ user }) {
     setLoading(true);
     try {
       await setDoc(
-        doc(db, "vasos", user.uid, "dias", currentKey),
+        doc(db, "usuarios", user.uid, "dias", currentKey),
         { count: newVal },
         { merge: true }
       );
@@ -72,16 +85,21 @@ export default function Home({ user }) {
   };
 
   const resetDay = async () => {
-    const confirmar = window.confirm("¿Seguro que querés reiniciar el conteo de hoy?");
-    if (!confirmar) return;
-    setCount(0);
-    setLoading(true);
+    setResetPopup(true);
+  };
+
+  const confirmReset = async () => {
+    setLoadingReset(true);
     try {
-      await setDoc(doc(db, "vasos", user.uid, "dias", currentKey), { count: 0 }, { merge: true });
+
+      await setDoc(doc(db, "usuarios", user.uid, "dias", currentKey), { count: 0 }, { merge: true });
+      setCount(0);
     } finally {
-      setLoading(false);
+      setLoadingReset(false);
+      setResetPopup(false);
     }
   };
+
 
   const percent = Math.min((count / goal) * 100, 100);
 
@@ -89,12 +107,6 @@ export default function Home({ user }) {
     <div className="home-page">
       <section className="card">
         <h2 className="bienvenido">Hola, {nombre}</h2>
-
-        {loading && (
-          <div className="spinner">
-            <FaCircleNotch className="spin" />
-          </div>
-        )}
 
         <div className="C1 gp25">
           {/* Fecha */}
@@ -110,7 +122,7 @@ export default function Home({ user }) {
                 )
               }
             >
-              <FaAngleLeft className="IZQ"/>
+              <FaAngleLeft className="IZQ" />
             </button>
 
             <input
@@ -130,14 +142,20 @@ export default function Home({ user }) {
                 )
               }
             >
-              <FaAngleRight className="DER"/>
+              <FaAngleRight className="DER" />
             </button>
 
-            <button onClick={() => setDate(new Date().toISOString().slice(0, 10))}>
-              <FaCalendarDay className="HOY"/>
+            <button onClick={() => setDate(getTodayInZone(zonaHoraria))}>
+              <FaCalendarDay className="HOY" />
             </button>
           </div>
 
+
+          {loading && (
+            <div className="spinner">
+              <FaCircleNotch className="spin" />
+            </div>
+          )}
           {/* Contador */}
           <div className="count">{count}</div>
 
@@ -172,6 +190,23 @@ export default function Home({ user }) {
           </div>
         </div>
       </section>
+      {/* Popup de reset */}
+      {resetPopup && (
+        <div className="fondoPopupEmail" style={{ left: "620px", top: "350px" }}>
+          <div className="EstiloPopupEmail">
+
+            <p className="MsjpopupEmail">¿Seguro que querés reiniciar el conteo de hoy?</p>
+
+            <div style={{ display: "flex", justifyContent: "space-around", marginTop: 10 }}>
+
+              <button onClick={confirmReset} disabled={loadingReset} className="btnS">
+                {loadingReset ? <FaCircleNotch className="spin" /> : "Sí"}
+              </button>
+              <button onClick={() => setResetPopup(false)} disabled={loadingReset} className="btnN">No</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

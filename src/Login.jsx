@@ -11,34 +11,69 @@ export default function Login({ setCurrentScreen }) {
   const [msg, setMsg] = useState("");
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [logOk, setLogOk] = useState(false);
+  const [errors, setErrors] = useState({ email: "", password: "" });
 
   const loginEmail = async () => {
-    if (!email || !password) return alert("Completá todos los campos.");
+
+    let valid = true;
+    const newErrors = { email: "", password: "" };
+
+    if (!email) {
+      newErrors.email = "Completá tu email";
+      valid = false;
+    }
+    if (!password) {
+      newErrors.password = "Completá tu contraseña";
+      valid = false;
+    }
+    setErrors(newErrors);
+    if (!valid) return;
+
     setLoading(true)
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
       if (!user.emailVerified) {
-        alert("Tu correo no está verificado. Revisá tu bandeja y confirmá el mail antes de entrar.");
+        setErrors({ email: "Tu correo no está verificado", password: "" });
         await auth.signOut();
         return;
       }
 
       setMsg("Login correcto...");
     } catch (e) {
-      setMsg(e.message);
-    } finally {
-      setLoading(false)
+      console.log(e.code);
+      switch (e.code) {
+        case "auth/invalid-email":
+          setErrors({ email: "Correo inválido", password: "" });
+          break;
+        case "auth/user-not-found":
+          setErrors({ email: "El correo no existe", password: "" });
+          break;
+        case "auth/wrong-password":
+          setErrors({ email: "", password: "Contraseña incorrecta" });
+          break;
+        case "auth/too-many-requests":
+          setErrors({ email: "Demasiados intentos fallidos", password: "" });
+          break;
+        case "auth/invalid-credential":
+          setErrors({ password: "Contraseña incorrecta", email: "" });
+          break;
+        default:
+          setMsg(e.message);
+      }
     }
-  };
+  }
 
   const loginGoogle = async () => {
     setLoading(true)
     try {
       const provider = new GoogleAuthProvider();
-      await signInWithPopup(auth, provider);
-      setMsg("Login correcto...");
+      const id = await signInWithPopup(auth, provider);
+      alert(id)
+      setLogOk(true);
+      alert("Login correcto...");
     } catch (e) {
       setMsg(e.message);
     } finally { setLoading(false) }
@@ -65,10 +100,17 @@ export default function Login({ setCurrentScreen }) {
         <p className="text-center fz-14 colorMsj">Ingrese a su cuenta con correo y contraseña</p>
 
         <div className="name-group C1">
-          <input type="email" className="email fondoInput bordeInput MBInput paddingInput colorInput FSInput outline my-4" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
 
+          <div>
+
+            <input style={{ width: "88%" }} type="email" className="email fondoInput bordeInput MBInput paddingInput colorInput FSInput outline my-4" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
+            {errors.email && <div style={{ color: "#f76161", fontSize: "0.8em" }}>{errors.email}</div>}
+          </div>
+
+          <div style={{ position: "relative", width: "91%" }}>
             <input
               type={showPass ? "text" : "password"}
+              style={{ paddingRight: "2.5rem", width: "88%" }}
               className="password fondoInput bordeInput MBInput paddingInput colorInput FSInput outline my-2"
               placeholder="Contraseña"
               value={password}
@@ -76,18 +118,29 @@ export default function Login({ setCurrentScreen }) {
             />
             <button
               type="button"
-              className="paddingOjo topOjoL MLOjoL transparente bordeNo outline pointer blanco absolute"
+              className="paddingOjo topOjoL transparente bordeNo outline pointer blanco absolute"
+              style={{
+                position: "absolute",
+                right: "-0.6rem",
+                top: "52%",
+                transform: "translateY(-50%)",
+                border: "none",
+                background: "transparent",
+                cursor: "pointer",
+                color: "white"
+              }}
               onClick={() => setShowPass(!showPass)}
             >
               {showPass ? <FaEyeSlash /> : <FaEye />}
             </button>
 
-            
+            {errors.password && <div style={{ color: "#f76161", fontSize: "0.8em" }}>{errors.password}</div>}
 
-          
+          </div>
+
 
         </div>
-<button onClick={resetPassword} className="resetpass ColorMsj">¿Olvidaste tu contraseña?</button>
+        <button onClick={resetPassword} className="resetpass ColorMsj">¿Olvidaste tu contraseña?</button>
 
         <div className="separator pt-4">
           <span className="line"></span>
@@ -100,7 +153,10 @@ export default function Login({ setCurrentScreen }) {
           <div>{msg}</div>
         </div>
 
-        <button onClick={loginEmail} className="btnLogin bordeBtn colorBtn paddingBtn btnHover transicionesBtn MPBtn transparente width100">Login</button>
+        <button onClick={loginEmail} className="btnLogin bordeBtn colorBtn paddingBtn btnHover transicionesBtn MPBtn transparente width100" disabled={loading}>{loading ? (<FaCircleNotch className="spin" /> // clase para animación
+        ) : (
+          "Login"
+        )}</button>
         <p className="colorMsj FZMsj Text-decorationMsj text-center"> ¿No tenés cuenta?
           <span className="loginA pointer colorMsj ColorMsj MGTopMsj px-1 Text-decorationMsj" onClick={() => setCurrentScreen("registro")}>
             Registrate
@@ -109,6 +165,13 @@ export default function Login({ setCurrentScreen }) {
 
 
       </section>
+
+      {logOk && (
+        <div >
+          hola
+        </div>
+
+      )}
     </div>
   );
 }

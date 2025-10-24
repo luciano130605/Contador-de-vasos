@@ -1,6 +1,6 @@
 // src/App.js
 import { useState, useEffect } from "react";
-import { FaBars, FaHome, FaUser, FaSlidersH, FaClock, FaSignOutAlt } from "react-icons/fa";
+import { FaBars, FaHome, FaUser, FaSlidersH, FaClock, FaSignOutAlt, FaChartLine } from "react-icons/fa";
 import Home from "./Home";
 import Cuenta from "./Cuenta";
 import Preferencias from "./Preferencias";
@@ -16,11 +16,17 @@ export default function App() {
   const [currentScreen, setCurrentScreen] = useState("home");
   const [menuOpen, setMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
-  
+
 
   // Escucha cambios de auth
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (u) => setUser(u));
+    const unsubscribe = onAuthStateChanged(auth, (u) => {
+      if (u && u.emailVerified) {
+        setUser(u); // usuario confirmado → Home
+      } else {
+        setUser(null); // usuario no confirmado o no logueado → Login/Registro
+      }
+    });
     return () => unsubscribe();
   }, []);
 
@@ -57,7 +63,7 @@ export default function App() {
               <li><button onClick={() => setCurrentScreen("home")}><FaHome /> Inicio</button></li>
               <li><button onClick={() => setCurrentScreen("cuenta")}><FaUser /> Cuenta</button></li>
               <li><button onClick={() => setCurrentScreen("preferencias")}><FaSlidersH /> Preferencias</button></li>
-              <li><button onClick={() => setCurrentScreen("historial")}><FaClock /> Historial</button></li>
+              <li><button onClick={() => setCurrentScreen("historial")}><FaChartLine /> Metricas</button></li>
               <li><button onClick={() => signOut(auth)}><FaSignOutAlt /> Cerrar sesión</button></li>
             </ul>
           </aside>

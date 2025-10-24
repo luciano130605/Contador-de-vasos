@@ -19,6 +19,85 @@ button {
     cursor: pointer;
 }
 
+/* == modo claro o oscuro == */
+.theme-switch-container {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+    position: absolute;
+    top: -4px;
+    left: 320px;
+}
+
+/* Switch base */
+.theme-switch {
+    position: relative;
+    width: 50px;
+    height: 36px;
+    background: #f3f3f3;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Íconos */
+.theme-switch .icon {
+    font-size: 15px;
+    z-index: 2;
+    transition: color 0.3s ease;
+}
+
+/* Modo claro */
+.theme-switch .sun {
+    color: #000;
+    /* ahora es negro */
+}
+
+.theme-switch .moon {
+    color: #888;
+}
+
+/* Slider */
+.theme-switch .slider {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 30px;
+    height: 30px;
+    background: #ffffff;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Tema oscuro */
+.theme-switch.dark {
+    background: #0f1724;
+    border-color: #444;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+.theme-switch.dark .slider {
+    left: 37px;
+    background: #041025;
+}
+
+.theme-switch.dark .sun {
+    color: #aaa;
+    /* sol apagado */
+}
+
+.theme-switch.dark .moon {
+    color: #ffffff;
+    /* luna celeste */
+}
+
 /* == CARD == */
 .card {
     position: relative;
@@ -266,6 +345,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     top: 0;
     left: 0;
     width: 100vw;
+    animation: spin 1s linear infinite;
+    display: inline-block;
     height: 100vh;
     background: rgba(0, 0, 0, 0.25);
     display: none;
@@ -276,7 +357,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .spin {
-    font-size: 3rem;
+    font-size: 1rem;
     color: #9baec0;
     animation: spin 1s linear infinite;
     text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
@@ -284,11 +365,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 /* == EFECTOS == */
 @keyframes spin {
-    from {
+    0% {
         transform: rotate(0deg);
     }
 
-    to {
+    100% {
         transform: rotate(360deg);
     }
 }
@@ -397,7 +478,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .T-1 {
- top: 1.8rem;
+    top: 1.8rem;
 }
 
 
@@ -474,7 +555,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .topOjoL {
     top: 44%;
-} 
+}
 
 .MLOjoL {
     margin-left: 78%;
@@ -700,6 +781,10 @@ select {
     width: 100%;
 }
 
+.form-group input[type="number"] {
+    width: 95%;
+}
+
 .form-group select {
     width: 95%;
 }
@@ -716,7 +801,7 @@ select {
 .form-group.floating-label input[type="text"],
 .form-group.floating-label input[type="email"],
 .form-group.floating-label input[type="password"],
-.form-group.floating-label select {
+.form-group.floating-label input[type="number"] .form-group.floating-label select {
     font-family: "Roboto", Arial, sans-serif;
     box-sizing: border-box;
     background-color: transparent;
@@ -785,4 +870,341 @@ select {
     border: none;
     outline: none;
     text-decoration: none;
+}
+
+/* == POPUP REGISTRO EMAIL */
+.fondoPopupEmail {
+    background: rgb(4, 16, 37, 0.8);
+    backdrop-filter: blur(6px);
+    padding: 10px;
+    position: absolute;
+    top: 35%;
+    left: 10%;
+    border-radius: 20px;
+    z-index: 1000;
+    height: 150px;
+}
+
+.MsjpopupEmail {
+    text-align: center;
+    position: relative;
+    top: 40px;
+}
+
+.BtnPopupEmail {
+    background: transparent;
+    outline: none;
+    position: relative;
+    padding: 10px;
+    width: 300px;
+    top: 60px;
+    left: 90px;
+    border: 1px solid #9baec0;
+    border-radius: 12px;
+    color: #9baec0;
+    transition: all 0.3s ease;
+}
+
+.btnS {
+    background: transparent;
+    outline: none;
+    position: relative;
+    padding: 10px;
+    width: 50px;
+    top: 60px;
+    left: 50px;
+    border: 1px solid #9baec0;
+    border-radius: 12px;
+    color: #9baec0;
+    transition: all 0.3s ease;
+}
+
+.btnN {
+    background: transparent;
+    outline: none;
+    position: relative;
+    padding: 10px;
+    width: 50px;
+    top: 60px;
+    left: -40px;
+    border: 1px solid #9baec0;
+    border-radius: 12px;
+    color: #9baec0;
+    transition: all 0.3s ease;
+}
+
+.btnS:hover,
+.btnN:hover {
+    transform: translateY(-1px);
+    background: #9baec0;
+    color: #0f1724;
+}
+
+.BtnPopupEmail:hover {
+    transform: translateY(-1px);
+    background: #9baec0;
+    color: #0f1724;
+}
+
+
+/* == metricas  == */
+.BTNVerSem {
+    background: transparent;
+    outline: none;
+    position: relative;
+    padding: 10px;
+    border: 1px solid #9baec0;
+    border-radius: 12px;
+    color: #ffffff;
+    transition: all 0.3s ease;
+}
+
+.BTNVerSem:hover {
+    transform: translateY(-1px);
+    background: #9baec0;
+    color: #0f1724;
+}
+
+
+/* == POPUP CUENTA == */
+.CuentaPopup {
+    background: rgb(4, 16, 37, 0.8);
+    backdrop-filter: blur(6px);
+    padding: 10px;
+    position: absolute;
+    top: 10%;
+    left: 5%;
+    border-radius: 20px;
+    z-index: 1000;
+    height: 250px;
+    width: 350px;
+}
+
+.CuentaPopupH3 {
+    color: white;
+    text-align: center;
+}
+
+.CuentaPopupP {
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.CuentaPopupP strong {
+    color: #fa5151;
+}
+
+.CuentaPopupInput {
+    color: rgb(250, 81, 81);
+    position: relative;
+    left: 20%;
+}
+
+.CuentaPopupBtnEliminar {
+    background: transparent;
+    outline: none;
+    position: relative;
+    padding: 10px;
+    width: 30%;
+    top: 20px;
+    left: 50px;
+    border: 1px solid red;
+    border-radius: 12px;
+    color: red;
+    transition: all 0.3s ease;
+    font-weight: 600;
+}
+
+.CuentaPopupBtnCancelar {
+    background: transparent;
+    outline: none;
+    position: relative;
+    padding: 10px;
+    width: 30%;
+    top: 20px;
+    left: 80px;
+    border: 1px solid #9baec0;
+    border-radius: 12px;
+    color: #9baec0;
+    transition: all 0.3s ease;
+}
+
+.CuentaPopupBtnCancelar:hover {
+    transform: translateY(-1px);
+    background: #9baec0;
+    color: #0f1724;
+}
+
+.CuentaPopupBtnEliminar:hover {
+    transform: translateY(-1px);
+    background: red;
+    color: white;
+}
+
+/* === MODO CLARO === */
+
+body.light-theme {
+    background: linear-gradient(180deg, #f7fcfe 0%, #f8f8f8 100%);
+    color: #0f1724;
+}
+
+/* === CARD === */
+body.light-theme .card {
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    color: #0f1724;
+}
+
+/* === INPUTS === */
+body.light-theme .form-group {
+    background: rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+body.light-theme .form-group input,
+body.light-theme .form-group select {
+    color: #0f1724;
+}
+
+body.light-theme .form-group.floating-label label {
+    color: #222;
+}
+
+body.light-theme .form-group.floating-label input:focus+label,
+body.light-theme .form-group.floating-label select:focus+label {
+    color: #0f1724;
+}
+
+/* === BOTONES === */
+body.light-theme .btnGC {
+    border-color: #0f1724;
+    color: #0f1724;
+}
+
+body.light-theme .btnGC:hover {
+    background: #0f1724;
+    color: white;
+}
+
+body.light-theme .btnEC {
+    border-color: #e63946;
+    color: #e63946;
+}
+
+body.light-theme .btnEC:hover {
+    background: #e63946;
+    color: white;
+}
+
+/* === MENÚ LATERAL === */
+body.light-theme .menu-lateral {
+    background: #ffffff;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
+}
+
+body.light-theme .menu-title,
+body.light-theme .menu-lateral button {
+    color: #0f1724;
+}
+
+body.light-theme .menu-lateral button:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+/* === TOPBAR === */
+body.light-theme .topbar {
+    background: rgba(255, 255, 255, 0.8);
+    color: #0f1724;
+    backdrop-filter: blur(6px);
+}
+
+/* === BOTONES CONTADOR === */
+body.light-theme .btnMas,
+body.light-theme .btnMenos {
+    background: rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    color: #0f1724;
+}
+
+body.light-theme .btnMas:hover,
+body.light-theme .btnMenos:hover {
+    background: #0f1724;
+    color: #ffffff;
+}
+
+body.light-theme .btnTrash {
+    color: #0f1724;
+}
+
+/* === INPUTS DE FECHA === */
+body.light-theme input[type="date"] {
+    background: rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    color: #0f1724;
+}
+
+body.light-theme input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(0);
+}
+
+/* === PROGRESO === */
+body.light-theme .progress-bar {
+    background: rgba(0, 0, 0, 0.08);
+}
+
+body.light-theme .Faltan {
+    color: #4b5563;
+}
+
+/* === TEXTO === */
+body.light-theme .bienvenido {
+    color: #4b5563;
+}
+
+body.light-theme .colorMsj {
+    color: #374151;
+}
+
+/* === DROPDOWN === */
+body.light-theme .dropdown-btn {
+    background: rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    color: #0f1724;
+}
+
+body.light-theme .dropdown-content {
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+body.light-theme .dropdown-item {
+    color: #0f1724;
+}
+
+body.light-theme .dropdown-item:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+/* === SWITCH MODO === */
+body.light-theme .theme-switch {
+    background: #e9eef5;
+    border-color: #bbb;
+}
+
+body.light-theme icon body.light-theme .theme-switch .sun {
+    color: #000;
+    /* activo */
+}
+
+body.light-theme .theme-switch .moon {
+    color: #888;
+}
+
+/* === OTROS DETALLES === */
+body.light-theme .separator .line {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+body.light-theme .separator .or {
+    color: #374151;
 }

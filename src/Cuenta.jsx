@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import { doc, getDoc, setDoc, deleteDoc, collection, getDocs } from "firebase/firestore";
 import { deleteUser, EmailAuthProvider, reauthenticateWithCredential } from "firebase/auth";
 import { db, auth } from "./firebase";
+import { FaCircleNotch } from "react-icons/fa";
+
 
 
 export default function Cuenta({ user }) {
@@ -12,6 +14,9 @@ export default function Cuenta({ user }) {
   const [msg, setMsg] = useState("");
   const [checkVisible, setCheckVisible] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [confirmText, setConfirmText] = useState("");
+  const [showPopup, setShowPopup] = useState(false);
+
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -39,7 +44,6 @@ export default function Cuenta({ user }) {
 
     try {
       await setDoc(doc(db, "usuarios", user.uid), { name: nombre, apellido, email }, { merge: true });
-      setMsg("Cambios guardados");
       setCheckVisible(true);
       setTimeout(() => setCheckVisible(false), 2000);
     } catch (e) {
@@ -51,31 +55,30 @@ export default function Cuenta({ user }) {
   };
 
   const eliminarCuenta = async () => {
-    if (!window.confirm("¿Eliminar cuenta y todos los datos?")) return;
+    if (confirmText.trim().toLowerCase() !== "eliminar") {
+      alert('Tenés que escribir "eliminar" para borrar tu cuenta.');
+      return;
+    }
+
     setLoading(true);
-
     try {
-      const password = prompt("Para eliminar la cuenta, ingresá tu contraseña:");
-      if (!password) throw new Error("Se requiere la contraseña para eliminar la cuenta.");
-      const credential = EmailAuthProvider.credential(user.email);
-      await reauthenticateWithCredential(user, credential);
+      const diasCol = collection(db, "usuarios", user.uid, "dias");
+      const docsSnap = await getDocs(diasCol);
+      for (const docSnap of docsSnap.docs) {
+        await deleteDoc(doc(db, "usuarios", user.uid, "dias", docSnap.id));
+      }
 
-      const vasosCol = collection(db, "vasos", user.uid, "dias");
-      const docsSnap = await getDocs(vasosCol);
-      for (const docSnap of docsSnap.docs)
-        await deleteDoc(doc(db, "vasos", user.uid, "dias", docSnap.id));
-
-      // Eliminar usuario
       await deleteDoc(doc(db, "usuarios", user.uid));
       await deleteUser(user);
 
-      alert("Cuenta eliminada");
-      window.location.href = "login.jsx";
+      alert("Cuenta eliminada con éxito.");
+      window.location.href = "login.html";
     } catch (e) {
       console.error(e);
-      alert("Error eliminando cuenta. Reingresá y probá de nuevo.");
+      alert("Error eliminando cuenta. Reingresá y probá de nuevo.\n" + e.message);
     } finally {
       setLoading(false);
+      setShowPopup(false);
     }
   };
 
@@ -100,15 +103,50 @@ export default function Cuenta({ user }) {
 
 
       <div className="name-group my-4" style={{ display: 'grid', gap: '10px', gridTemplateColumns: "repeat(2,minmax(0,1fr))" }}>
-
-        <button onClick={guardarCambios} disabled={loading} className="btnGC">Guardar cambios</button>
-        {checkVisible && <span style={{ color: "limegreen" }}>✔</span>}
-        {msg && <div style={{ color: "green" }}>{msg}</div>}
-
-        <button onClick={eliminarCuenta} disabled={loading} className="btnEC">Eliminar cuenta</button>
-
+        <button onClick={guardarCambios} className="btnGC" disabled={loading}>
+          {loading ? (
+            <FaCircleNotch className="spin" />
+          ) : checkVisible ? (
+            <span style={{ display: "flex", alignItems: "center", gap: "5px", color: "#59ff59", textAlign: "center", position: "relative", left: "45px" }}>
+              Guardado
+            </span>
+          ) : (
+            "Guardar cambios"
+          )}
+        </button>
+        {msg && <div style={{ color: "red" }}>{msg}</div>}
+        <button onClick={() => setShowPopup(true)} disabled={loading} className="btnEC">Eliminar cuenta</button>
       </div>
-    </section >
 
+      {/* 🔥 Popup de confirmación */}
+      {showPopup && (
+        <div className="CuentaPopup">
+          <div>
+            <h3 className="CuentaPopupH3">Confirmar eliminación</h3>
+            <p className="CuentaPopupP">Escribí <strong>eliminar</strong> para borrar tu cuenta.</p>
+            <input className="CuentaPopupInput fondoInput bordeInput MBInput paddingInput colorInput FSInput outline my-2"
+              type="text"
+              value={confirmText}
+              onChange={(e) => setConfirmText(e.target.value)}
+              placeholder="eliminar"
+            />
+            <div>
+              <button className="CuentaPopupBtnEliminar"
+                onClick={eliminarCuenta}
+                disabled={loading}
+              >
+                {loading ? "Eliminando..." : "Eliminar"}
+              </button>
+              <button className="CuentaPopupBtnCancelar"
+                onClick={() => setShowPopup(false)}
+
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </section >
   );
-}
+};  

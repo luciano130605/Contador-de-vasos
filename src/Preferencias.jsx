@@ -1,4 +1,4 @@
-import { FaSun, FaMoon, FaCheck } from "react-icons/fa";
+import { FaSun, FaMoon, FaCheck, FaCircleNotch } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "./firebase";
@@ -11,6 +11,10 @@ export default function Preferencias({ user }) {
   const [msg, setMsg] = useState("");
   const [checkVisible, setCheckVisible] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    document.body.classList.toggle("light-theme", tema === "claro");
+  }, [tema]);
 
   useEffect(() => {
     const fetchPrefs = async () => {
@@ -36,7 +40,6 @@ export default function Preferencias({ user }) {
         { preferencias: { metaDiaria, tema } },
         { merge: true }
       );
-      setMsg("Preferencias guardadas");
       setCheckVisible(true);
       setTimeout(() => setCheckVisible(false), 2000);
     } catch (e) {
@@ -56,32 +59,36 @@ export default function Preferencias({ user }) {
       <h2 className="text-center">Preferencias</h2>
 
       <div className="form-group floating-label">
-        <input id="meta" placeholder=" " className=" form-group meta fondoInput bordeInput MBInput paddingInput colorInput FSInput outline my-2 width88" type="number" value={metaDiaria} onChange={e => setMetaDiaria(parseInt(e.target.value))} />
-        <label htmlFor="meta" style={{left:'10px'}}> Meta diaria de vasos</label>
+        <input id="meta" placeholder=" " className=" form-group meta fondoInput bordeInput MBInput colorInput FSInput outline my-2 width88" type="number" value={metaDiaria} onChange={e => setMetaDiaria(parseInt(e.target.value))} />
+        <label htmlFor="meta" style={{ left: '10px' }}> Meta diaria de vasos</label>
       </div>
 
 
 
-      <div style={{ marginTop: 18, marginBottom: 24 }}>
-        <button
+      <div className="theme-switch-container">
+        <div
+          className={`theme-switch ${tema === "oscuro" ? "dark" : ""}`}
           onClick={toggleTema}
-          className="theme-toggle-btn transparente bordeNo blanco L-23 T-1 absolute"
-          title={`Cambiar a modo ${tema === "claro" ? "oscuro" : "claro"}`}
         >
-          {tema === "claro" ? (
-            <FaSun className="icon-sol" />
-          ) : (
-            <FaMoon className="icon-luna" />
-          )}
-        </button>
+          <FaSun className="icon sun" />
+          <FaMoon className="icon moon" />
+          <div className="slider" />
+        </div>
       </div>
 
 
 
-      <button onClick={guardarPreferencias} disabled={loading} className="btnGC">
-        Guardar preferencias
+      <button onClick={guardarPreferencias} disabled={loading} className="btnGC" disabled={loading}>
+        {loading ? (
+          <FaCircleNotch className="spin" />
+        ) : checkVisible ? (
+          <span style={{ display: "flex", alignItems: "center", gap: "5px", color: "#59ff59", textAlign: "center", position: "relative", left: "140px" }}>
+            Guardado
+          </span>
+        ) : (
+          " Guardar preferencias"
+        )}
       </button>
-      {checkVisible && <span style={{ color: "limegreen" }}>✔</span>}
       {msg && <div style={{ color: msg.includes("Error") ? "red" : "green" }}>{msg}</div>}
     </section>
   );
